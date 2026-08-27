@@ -16,11 +16,9 @@ const HEART_PATH =
 
 export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onComplete()
-    }, 2000)
+    const frame = requestAnimationFrame(onComplete)
 
-    return () => clearTimeout(timer)
+    return () => cancelAnimationFrame(frame)
   }, [onComplete])
 
   return (

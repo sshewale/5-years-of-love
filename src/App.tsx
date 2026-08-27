@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, useEffect } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { EasterEggProvider } from './components/EasterEgg'
@@ -11,7 +11,6 @@ import { BackToTop } from './components/layout/BackToTop'
 import { MusicPlayer } from './components/MusicPlayer'
 import { LoadingScreen } from './components/LoadingScreen'
 import { useDarkMode } from './hooks/useDarkMode'
-import { BIRTHDAY_CONFIG } from './utils/constants'
 
 const Landing                = lazy(() => import('./pages/Landing'))
 const Timeline               = lazy(() => import('./pages/Timeline'))
@@ -34,19 +33,6 @@ const CINEMATIC_ROUTES = ['/celebration', '/countdown', '/surprise', '/forever']
 // ── Birthday auto-detection ───────────────────────────────────────────────────
 // If Swati opens the site on her actual birthday (Sept 7 IST), redirect straight
 // to the celebration page instead of showing the countdown.
-function useBirthdayRedirect() {
-  const navigate = useNavigate()
-  const { pathname } = useLocation()
-
-  useEffect(() => {
-    if (pathname !== '/') return
-    const now = new Date(new Date().toLocaleString('en-US', { timeZone: BIRTHDAY_CONFIG.timezone }))
-    if (now.getDate() === BIRTHDAY_CONFIG.day && now.getMonth() + 1 === BIRTHDAY_CONFIG.month) {
-      navigate('/celebration', { replace: true })
-    }
-  }, [navigate, pathname])
-}
-
 // ── Page loader ───────────────────────────────────────────────────────────────
 function PageLoader() {
   return (
@@ -73,8 +59,6 @@ function PageLoader() {
 function AnimatedRoutes() {
   const location = useLocation()
   const isCinematic = CINEMATIC_ROUTES.some(r => location.pathname.startsWith(r))
-  useBirthdayRedirect()
-
   return (
     <AnimatePresence mode="wait">
       <motion.div
