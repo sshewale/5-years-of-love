@@ -1,218 +1,58 @@
-// ─── Landing.tsx — Hero page for "5 Years of Love" ────────────────────────────
-import { useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import StarField from '../components/animations/StarField'
-import Fireflies from '../components/animations/Fireflies'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ArrowDown, ChevronLeft, ChevronRight, Heart, LockKeyhole, RotateCcw, Volume2, VolumeX, X } from 'lucide-react'
 import FloatingHearts from '../components/animations/FloatingHearts'
-import Typewriter from '../components/animations/Typewriter'
-import BirthdayCountdown from '../components/BirthdayCountdown'
-import Button from '../components/ui/Button'
-import { birthdayMessages } from '../data/birthdayMessages'
-import { computeYearsOfLove } from '../utils/formatters'
+import { useConfetti } from '../hooks/useConfetti'
 
-// ── Balloon colours (rose-gold / pink / lavender palette) ─────────────────────
-const BALLOON_CONFIGS = [
-  { color: '#B76E79', x: '10%', delay: 0.0, size: 56 },
-  { color: '#FFD6E0', x: '25%', delay: 0.15, size: 48 },
-  { color: '#E8D5F5', x: '50%', delay: 0.05, size: 64 },
-  { color: '#B76E79', x: '72%', delay: 0.2,  size: 52 },
-  { color: '#FFD6E0', x: '88%', delay: 0.1,  size: 44 },
-] as const
+const memories = [
+  { title: 'The Beginning', date: '[OUR_FIRST_MEMORY]', image: '/images/placeholder/gallery-1.jpg', caption: 'Every beautiful story has a beginning... and ours became my favourite story.', detail: '[OUR_SPECIAL_DATE] is still one of the dates I carry closest to my heart.' },
+  { title: 'The Memories We Created', date: '[MEMORY_1]', image: '/images/placeholder/gallery-8.jpg', caption: 'This smile... still my favourite view.', detail: 'The kind of ordinary day that became extraordinary simply because it was ours.' },
+  { title: 'The Adventures', date: '[OUR_FAVOURITE_TRIP]', image: '/images/placeholder/gallery-11.jpg', caption: 'One more memory I would happily live again.', detail: 'Every wrong turn, long drive and shared laugh made the journey better.' },
+  { title: 'The Little Things', date: '[MEMORY_2]', image: '/images/placeholder/gallery-15.jpg', caption: 'Us - exactly where I want to be.', detail: 'The quiet moments are not background to our story. They are the story.' },
+]
+const gallery = [
+  { image: '/images/placeholder/gallery-2.jpg', caption: 'This smile... still my favourite view.' },
+  { image: '/images/placeholder/gallery-6.jpg', caption: 'One more memory I would happily live again.' },
+  { image: '/images/placeholder/gallery-12.jpg', caption: 'Us - exactly where I want to be.' },
+  { image: '/images/placeholder/gallery-17.jpg', caption: 'Some moments become memories. Some memories become treasures.' },
+]
+const reasons = [
+  ['Your Smile', 'Because somehow it can make even my worst day better.'], ['Your Heart', 'You care more deeply than you realize.'], ['Your Strength', 'I admire the woman you are, especially on the days you doubt yourself.'], ['Your Little Habits', 'Even the things you do not notice have become part of my favourite things.'], ['Your Laugh', 'It is one of the sounds I would choose in every lifetime.'], ['Your Patience', 'You make room for me to be human, and that is a beautiful gift.'], ['Your Courage', 'You keep moving forward with a grace I never stop admiring.'], ['Your Kindness', 'You leave every place and every person a little warmer.'], ['Your Honesty', 'With you, I never have to pretend to be anyone else.'], ['Us', 'My favourite version of life is the one where we are together.'],
+]
+function Kicker({ children }: { children: string }) { return <p className="story-kicker">{children}</p> }
+function StoryButton({ children, onClick, muted = false }: { children: ReactNode; onClick?: () => void; muted?: boolean }) { return <button className={`story-button${muted ? ' story-button-muted' : ''}`} onClick={onClick}>{children}</button> }
 
-// ── Balloon SVG ───────────────────────────────────────────────────────────────
-interface BalloonProps {
-  color: string
-  size: number
-}
-
-function Balloon({ color, size }: BalloonProps) {
-  return (
-    <svg
-      width={size}
-      height={size * 1.3}
-      viewBox="0 0 60 78"
-      aria-hidden="true"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* Balloon body */}
-      <ellipse cx="30" cy="28" rx="26" ry="28" fill={color} opacity="0.88" />
-      {/* Shine */}
-      <ellipse cx="22" cy="17" rx="6" ry="8" fill="white" opacity="0.28" />
-      {/* Knot */}
-      <circle cx="30" cy="56" r="3" fill={color} opacity="0.8" />
-      {/* String */}
-      <path
-        d="M30 59 Q26 65 30 72 Q34 78 30 78"
-        stroke={color}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        fill="none"
-        opacity="0.6"
-      />
-    </svg>
-  )
-}
-
-// ── Stagger variants ──────────────────────────────────────────────────────────
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.2 },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 32 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
-  },
-}
-
-// ── Landing ───────────────────────────────────────────────────────────────────
 export default function Landing() {
-  const navigate = useNavigate()
-  const years = useMemo(() => computeYearsOfLove(), [])
+  const [opened, setOpened] = useState(false)
+  const [musicOn, setMusicOn] = useState(false)
+  const [selectedMemory, setSelectedMemory] = useState(0)
+  const [lightbox, setLightbox] = useState<number | null>(null)
+  const [finalOpen, setFinalOpen] = useState(false)
+  const audioRef = useRef<HTMLAudioElement>(null)
+  const { fireCelebration } = useConfetti()
+  useEffect(() => { if (opened && musicOn) void audioRef.current?.play().catch(() => setMusicOn(false)) }, [opened, musicOn])
+  const openStory = () => { setOpened(true); setMusicOn(true); window.setTimeout(() => document.getElementById('birthday')?.scrollIntoView({ behavior: 'smooth' }), 500) }
+  const toggleMusic = () => { if (musicOn) audioRef.current?.pause(); setMusicOn((value) => !value) }
+  const revealFinal = () => { setFinalOpen(true); fireCelebration() }
+  const replay = () => { setOpened(false); setFinalOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }
 
-  // Split hero message into lines for individual paragraph rendering
-  const heroLines = useMemo(
-    () => birthdayMessages.heroMessage.split('\n').filter(Boolean),
-    [],
-  )
-
-  return (
-    <div
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
-      style={{
-        background:
-          'linear-gradient(160deg, #F5ECD7 0%, rgba(255,214,224,0.35) 60%, #F5ECD7 100%)',
-      }}
-    >
-      {/* ── Fixed background layers ───────────────────────────────────────── */}
-      <StarField />
-      <Fireflies />
-      <FloatingHearts />
-
-      {/* ── Floating balloons ─────────────────────────────────────────────── */}
-      <div aria-hidden="true" className="fixed inset-0 pointer-events-none z-[1]">
-        {BALLOON_CONFIGS.map((cfg, i) => (
-          <motion.div
-            key={i}
-            initial={{ y: '110vh', x: cfg.x, opacity: 0, rotate: 0 }}
-            animate={{
-              y: [null, '-15vh'],
-              opacity: [0, 1, 1, 0.6],
-              rotate: [0, (i % 2 === 0 ? 1 : -1) * 4, (i % 2 === 0 ? -1 : 1) * 4, 0],
-            }}
-            transition={{
-              duration: 6 + i * 0.8,
-              delay: cfg.delay,
-              ease: 'easeOut',
-              opacity: { duration: 6 + i * 0.8, times: [0, 0.1, 0.85, 1] },
-              rotate: {
-                duration: 3 + i * 0.5,
-                repeat: Infinity,
-                repeatType: 'mirror',
-                ease: 'easeInOut',
-                delay: cfg.delay + 1,
-              },
-            }}
-            style={{ position: 'absolute', bottom: 0, left: 0 }}
-          >
-            <Balloon color={cfg.color} size={cfg.size} />
-          </motion.div>
-        ))}
-      </div>
-
-      {/* ── Hero content ──────────────────────────────────────────────────── */}
-      <motion.main
-        className="relative z-10 flex flex-col items-center text-center px-6 py-16 max-w-3xl mx-auto gap-8"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        aria-label="Birthday hero section"
-      >
-        {/* Years heading */}
-        <motion.h1
-          variants={itemVariants}
-          style={{
-            fontFamily: "'Playfair Display', serif",
-            textShadow: '0 2px 4px rgba(183,110,121,0.15)',
-          }}
-          className="text-6xl sm:text-7xl md:text-8xl font-bold text-[#B76E79] leading-tight drop-shadow-sm"
-          animate={{
-            textShadow: [
-              '0 2px 4px rgba(183,110,121,0.15)',
-              '0 2px 4px rgba(183,110,121,0.15), 0 0 24px rgba(183,110,121,0.45)',
-              '0 2px 4px rgba(183,110,121,0.15)',
-            ],
-          }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-        >
-          {years} Years of Love
-        </motion.h1>
-
-        {/* Hero message */}
-        <motion.div variants={itemVariants} className="flex flex-col gap-2">
-          {heroLines.map((line, idx) => (
-            <p
-              key={idx}
-              className={[
-                'text-base sm:text-lg leading-relaxed',
-                idx === 0
-                  ? 'text-[#B76E79] font-semibold text-xl sm:text-2xl'
-                  : 'text-[#5a4040]/80',
-              ].join(' ')}
-            >
-              {line}
-            </p>
-          ))}
-        </motion.div>
-
-        {/* Typewriter */}
-        <motion.div
-          variants={itemVariants}
-          className="text-[#B76E79]/70 italic text-lg sm:text-xl min-h-[2rem]"
-          style={{ fontFamily: "'Dancing Script', cursive" }}
-          aria-live="polite"
-        >
-          <Typewriter text="Every moment with you is our story…" speed={70} />
-        </motion.div>
-
-        {/* Divider */}
-        <motion.div variants={itemVariants} className="w-24 h-px bg-[#B76E79]/30 mx-auto" />
-
-        {/* Birthday countdown */}
-        <motion.div variants={itemVariants} className="w-full">
-          <BirthdayCountdown />
-        </motion.div>
-
-        {/* CTA */}
-        <motion.div variants={itemVariants}>
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={() => navigate('/timeline')}
-            ariaLabel="Enter our story and explore the timeline"
-            className="shadow-[0_4px_24px_rgba(183,110,121,0.35)] hover:shadow-[0_6px_32px_rgba(183,110,121,0.55)] transition-shadow"
-          >
-            Enter Our Story →
-          </Button>
-        </motion.div>
-      </motion.main>
-
-      {/* ── Subtle vignette ───────────────────────────────────────────────── */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-[2]"
-        style={{
-          background:
-            'radial-gradient(ellipse at center, transparent 55%, rgba(245,236,215,0.45) 100%)',
-        }}
-      />
-    </div>
-  )
+  return <div className="love-story">
+    <audio ref={audioRef} src="/audio/romantic-bg_1.mp3" loop />
+    <FloatingHearts />
+    {opened && <button className="music-control" onClick={toggleMusic} aria-label={musicOn ? 'Mute music' : 'Play music'}>{musicOn ? <Volume2 size={18} /> : <VolumeX size={18} />}<span>{musicOn ? 'Music on' : 'Music off'}</span></button>}
+    <AnimatePresence>{!opened && <motion.section className="story-opening" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.04 }}>
+      <div className="opening-sun" aria-hidden="true" /><div className="opening-copy"><Kicker>A birthday love letter, in chapters</Kicker><h1>Swati... I made something special for you <span>♥</span></h1><p className="opening-subtitle">Before you start... promise me you&apos;ll go through this till the very end.</p><StoryButton onClick={openStory}>Open Your Surprise <Heart size={16} fill="currentColor" /></StoryButton><p className="opening-signature">With all my love, Satish</p></div><div className="opening-note" aria-hidden="true"><span>07</span><small>SEP</small><span>26</span></div>
+    </motion.section>}</AnimatePresence>
+    {opened && <main>
+      <section id="birthday" className="story-hero story-section"><div className="hero-orbit" aria-hidden="true"><span>♥</span><span>✦</span><span>♥</span></div><Kicker>Chapter one / your day</Kicker><motion.h2 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}>Happy Birthday,<br /><em>My Love</em> <span>♥</span></motion.h2><p className="hero-subtitle">To the woman who made my ordinary life extraordinary.</p><div className="cake" aria-label="A birthday cake with glowing candles"><div className="flame">✦</div><div className="cake-candle" /><div className="cake-top" /><div className="cake-body" /><div className="cake-plate" /></div><div className="hero-letter"><p>Swati, you are the person who turned a life into a home. I am endlessly grateful for every day I get to call you my best friend, my partner, and my family.</p><p>Life feels softer, brighter and more possible because you are beside me. I do not just love the big celebrations. I love the sleepy conversations, the shared glances, the little routines and every unremarkable moment that becomes precious because it is ours.</p><p>Here is to every memory we have made, and every one still waiting for us.</p><p className="signature">Always yours,<br />Satish</p></div><a className="scroll-cue" href="#story">Begin our story <ArrowDown size={15} /></a></section>
+      <section id="story" className="story-section story-paper"><div className="story-heading"><Kicker>Chapter two / then and now</Kicker><h2>Our Story</h2><p>Five years, a thousand small moments, and one favourite person.</p></div><div className="memory-layout"><div className="memory-list">{memories.map((memory, index) => <button className={`memory-tab${selectedMemory === index ? ' active' : ''}`} key={memory.title} onClick={() => setSelectedMemory(index)}><span>0{index + 1}</span><strong>{memory.title}</strong><small>{memory.date}</small></button>)}</div><AnimatePresence mode="wait"><motion.article className="memory-feature" key={selectedMemory} initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -18 }} transition={{ duration: .35 }}><img src={memories[selectedMemory].image} alt={memories[selectedMemory].title} /><div className="memory-feature-copy"><p className="memory-date">{memories[selectedMemory].date}</p><h3>{memories[selectedMemory].title}</h3><p>{memories[selectedMemory].caption}</p><small>{memories[selectedMemory].detail}</small></div></motion.article></AnimatePresence></div></section>
+      <section className="story-section gallery-section"><div className="story-heading"><Kicker>Chapter three / kept forever</Kicker><h2>Memory Gallery</h2><p>Some moments become memories. Some memories become treasures.</p></div><div className="photo-grid">{gallery.map((photo, index) => <motion.button whileHover={{ y: -8 }} className={`photo-tile tile-${index + 1}`} key={photo.image} onClick={() => setLightbox(index)}><img src={photo.image} alt={photo.caption} /><span>{photo.caption}</span></motion.button>)}</div></section>
+      <section className="story-section reasons-section"><div className="story-heading"><Kicker>Chapter four / the details</Kicker><h2>Things I Love<br /><em>About You</em></h2><p>Not just the grand gestures. The details that make you, you.</p></div><div className="reasons-grid">{reasons.map(([title, copy], index) => <motion.article className="reason-card" key={title} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .3 }} transition={{ delay: index * .04 }}><span className="reason-number">{String(index + 1).padStart(2, '0')}</span><Heart size={17} fill="currentColor" /><h3>{title}</h3><p>{copy}</p></motion.article>)}</div></section>
+      <section className="story-section eyes-section"><div className="eyes-line" /><Kicker>Chapter five / if I could give you anything</Kicker><blockquote>&ldquo;I wouldn&apos;t give you diamonds or anything expensive. I&apos;d give you the ability to see yourself through my eyes... so you could see just how beautiful, precious and irreplaceable you are to me.&rdquo;</blockquote><div className="reveal-promise"><p>And if I could ask for one thing...</p><h2>Let me keep making you smile<br />for the rest of our lives. <span>♥</span></h2></div></section>
+      <section className="story-section future-section"><div className="future-copy"><Kicker>Chapter six / still ahead</Kicker><h2>Our best chapters<br /><em>are still waiting</em><br />to be written...</h2><p>More trips with no perfect itinerary. More laughter until our stomachs hurt. More celebrations, photographs, silly arguments and making up. More peaceful evenings where being together is enough.</p><p>More growing old side by side. More choosing each other. More of us building our little world, one ordinary and beautiful day at a time.</p></div><div className="future-stamp"><span>To<br />infinity</span><strong>∞</strong><small>and always</small></div></section>
+      <section className="story-section letter-section"><div className="letter-paper"><Kicker>Chapter seven / from my heart</Kicker><h2>A Letter For<br /><em>My Wife</em></h2><p>My dearest Swati,</p><p>Happy birthday to the woman who has made my world feel like the safest and most beautiful place to return to.</p><p>Sometimes I think about the person I was before you, and I cannot quite remember how that life felt. You have become part of the way I see mornings, plans, problems, celebrations and the future. You are in the little things: the stories I save to tell you, the first person I look for in a crowded room, the comfort of knowing that no matter how the day went, I get to come home to you.</p><p>I may not say it every day, and I may not always express it perfectly... but you mean more to me than I can put into words. Thank you for being my best friend, my partner in every adventure, and my family in the truest sense.</p><p>I hope this year gives you back some of the love you give so freely. There is still so much life ahead of us, and I want to fill it with places we have not seen, photographs we have not taken, jokes we have not told and the peaceful kind of happiness that only grows with time.</p><p>Happy Birthday, Swati. <span>♥</span></p><p className="signature">Always yours,<br />Satish</p></div></section>
+      <section className={`final-section${finalOpen ? ' final-open' : ''}`}><AnimatePresence mode="wait">{!finalOpen ? <motion.div key="locked" className="final-lock" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><LockKeyhole size={26} /><Kicker>The final chapter</Kicker><h2>One Last Surprise...</h2><p>You made it all the way here, my love.</p><StoryButton onClick={revealFinal}>I&apos;m Ready <Heart size={16} fill="currentColor" /></StoryButton></motion.div> : <motion.div key="revealed" className="final-message" initial={{ opacity: 0, scale: .92 }} animate={{ opacity: 1, scale: 1 }}><div className="final-sparkle">✦</div><h2>If I had to choose you<br />all over again...<br /><em>I&apos;d still choose you.</em></h2><p>Every single time. <span>♥</span></p><div className="final-divider" /><h3>Happy Birthday, My Love.</h3><p className="final-small">Here&apos;s to you.<br />Here&apos;s to us.<br />And here&apos;s to all the beautiful memories we haven&apos;t made yet.</p><StoryButton muted onClick={replay}><RotateCcw size={15} /> Replay Our Story</StoryButton></motion.div>}</AnimatePresence></section>
+    </main>}
+    <AnimatePresence>{lightbox !== null && <motion.div className="story-lightbox" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} role="dialog" aria-modal="true"><button className="lightbox-close" onClick={() => setLightbox(null)} aria-label="Close photo"><X /></button><button className="lightbox-arrow left" onClick={() => setLightbox((lightbox + gallery.length - 1) % gallery.length)} aria-label="Previous photo"><ChevronLeft /></button><motion.img key={lightbox} initial={{ scale: .88 }} animate={{ scale: 1 }} src={gallery[lightbox].image} alt={gallery[lightbox].caption} /><button className="lightbox-arrow right" onClick={() => setLightbox((lightbox + 1) % gallery.length)} aria-label="Next photo"><ChevronRight /></button><p>{gallery[lightbox].caption}</p></motion.div>}</AnimatePresence>
+  </div>
 }

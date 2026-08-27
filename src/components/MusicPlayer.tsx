@@ -11,7 +11,7 @@ import { Music, Play, Pause, Volume2, VolumeX, X, MicOff } from 'lucide-react'
 import { setStorageItem } from '../utils/storage'
 
 const MUSIC_PLAYING_KEY = 'swati_music_playing'
-const AUDIO_SRC = '/audio/romantic-bg.mp3'
+const AUDIO_SRC = '/audio/romantic-bg_1.mp3'
 const SONG_TITLE = 'Romantic Melody ♪'
 
 export function MusicPlayer() {

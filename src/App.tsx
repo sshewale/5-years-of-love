@@ -195,19 +195,20 @@ function Shell() {
   const { isDark } = useDarkMode()
   const isCinematic = CINEMATIC_ROUTES.some(r => location.pathname.startsWith(r))
   const isAdmin = location.pathname === '/admin'
+  const isLoveStory = location.pathname === '/'
 
   return (
     <div data-theme={isDark ? 'dark' : undefined} style={{ minHeight: '100vh' }}>
       <a href="#main-content" className="skip-link">Skip to content</a>
       <ScrollProgress />
-      {!isCinematic && !isAdmin && <Navbar />}
+      {!isCinematic && !isAdmin && !isLoveStory && <Navbar />}
       <main id="main-content">
         <AnimatedRoutes />
       </main>
-      {!isCinematic && !isAdmin && <JourneyNav />}
-      {!isCinematic && !isAdmin && <Footer />}
-      <MusicPlayer />
-      <BackToTop />
+      {!isCinematic && !isAdmin && !isLoveStory && <JourneyNav />}
+      {!isCinematic && !isAdmin && !isLoveStory && <Footer />}
+      {!isLoveStory && <MusicPlayer />}
+      {!isLoveStory && <BackToTop />}
     </div>
   )
 }
