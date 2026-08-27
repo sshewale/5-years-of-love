@@ -13,7 +13,7 @@ export const birthdayMessages: BirthdayMessages = {
     'From that first nervous meeting\nto mountains, beaches, backwaters and forts,\nEvery adventure has been my favourite\nbecause you were in it.',
 
   finalReveal:
-    '🎉 HAPPY BIRTHDAY SWATI 🎂\n\nFive years ago I walked into a room\nand saw the rest of my life.\n\nThank you for the mountains.\nThank you for the beaches.\nThank you for every road we took together —\nespecially the wrong ones.\n\n5 years of love. A lifetime to go.',
+    'My Dear Swati,\n\nFive years ago we promised to walk through life together.\n\nThank you for every smile,\nevery sacrifice,\nevery laugh,\nevery dream,\nand every moment you\'ve shared with me.\n\nYou are not just my wife.\n\nYou are my best friend,\nmy home,\nmy peace,\nand my forever.\n\nHappy Birthday My Love ❤️\n\nLove,\nSatish',
 
   foreverPromise:
     '❤️ I Loved You Before I Knew Your Name,\nAnd I Will Love You Long After Forever ❤️',
