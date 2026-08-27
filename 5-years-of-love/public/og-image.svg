@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5ECD7"/>
+      <stop offset="50%" style="stop-color:#FFD6E0"/>
+      <stop offset="100%" style="stop-color:#E8D5F5"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#B76E79"/>
+      <stop offset="100%" style="stop-color:#C9A0DC"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle dot pattern -->
+  <pattern id="dots" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+    <circle cx="2" cy="2" r="1.5" fill="#B76E79" opacity="0.12"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="120" cy="120" r="180" fill="#B76E79" opacity="0.07"/>
+  <circle cx="1100" cy="530" r="200" fill="#E8D5F5" opacity="0.5"/>
+  <circle cx="1050" cy="80" r="100" fill="#FFD6E0" opacity="0.4"/>
+
+  <!-- Heart icon -->
+  <path d="M600 230 C600 230 540 175 500 175 C460 175 430 205 430 240 C430 310 600 390 600 390 C600 390 770 310 770 240 C770 205 740 175 700 175 C660 175 600 230 600 230Z"
+        fill="url(#accent)" opacity="0.9"/>
+
+  <!-- Main heading -->
+  <text x="600" y="450" font-family="Georgia, serif" font-size="72" font-weight="700"
+        fill="#B76E79" text-anchor="middle" letter-spacing="2">
+    5 Years of Love
+  </text>
+
+  <!-- Subtitle -->
+  <text x="600" y="510" font-family="Georgia, serif" font-size="32" font-style="italic"
+        fill="#78716c" text-anchor="middle" opacity="0.85">
+    A birthday surprise — with love, always
+  </text>
+
+  <!-- Decorative lines -->
+  <line x1="300" y1="540" x2="530" y2="540" stroke="#B76E79" stroke-width="1.5" opacity="0.35"/>
+  <text x="600" y="547" font-family="Georgia, serif" font-size="20" fill="#B76E79" text-anchor="middle" opacity="0.6">✦</text>
+  <line x1="670" y1="540" x2="900" y2="540" stroke="#B76E79" stroke-width="1.5" opacity="0.35"/>
+</svg>

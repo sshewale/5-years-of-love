@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/Swati/Engagement/**)",
+      "Read(//d/Swati/Raigad Trip/**)",
+      "Read(//d/Swati/Goa Trip 2023/**)",
+      "Read(//d/Jan 2026/Camera/**)",
+      "Bash(grep -i '\\\\.jpg$')",
+      "Bash(ls \"/d/Swati/Marriage\" | grep -c \"gadekar_sidhu_photography\" *)",
+      "Read(//d/Swati/Marriage/**)",
+      "Read(//d/Swati/Tai Bday 2021/**)",
+      "Read(//d/Swati/Swa Bday 2021/**)",
+      "Read(//d/Swati/Our 1st Diwali/**)",
+      "Read(//d/Wedding/Satish/weeding/**)",
+      "Read(//d/Swati/ANNIVERSARY/**)",
+      "Read(//d/Swati/Dinner/**)",
+      "Bash(ls \"D:/Swati/Photoshoot@AditiGarden\" | wc -l; echo \"---unique date prefixes---\"; ls \"D:/Swati/Photoshoot@AditiGarden\" | grep -oE 'IMG[0-9]{8}' | sort -u)",
+      "Read(//d/Swati/Photoshoot@AditiGarden/**)",
+      "Bash(ls \"D:/Swati/Swati Mob. 25.03.2026\" | wc -l; echo \"---subfolders---\"; ls -la \"D:/Swati/Swati Mob. 25.03.2026\" | grep '^d')",
+      "Read(//d/Swati/Swati Mob. 25.03.2026/**)",
+      "Bash(cp '/d/Swati Drive/Swati and Me redmi note 5 pro-20220908T122654Z-001/Swati and Me redmi note 5 pro/Favorite/1634622471378.jpeg' '/s/Satish Jobs/Coding/5-years-of-love/5-years-of-love/public/images/placeholder/timeline-1.jpg')",
+      "Bash(cp '/d/Swati Drive/Swati and Me redmi note 5 pro-20220908T122654Z-001/Swati and Me redmi note 5 pro/Favorite/1634622471488.jpg' '/s/Satish Jobs/Coding/5-years-of-love/5-years-of-love/public/images/placeholder/timeline-2.jpg')",
+      "Bash(cp /d/Swati/Engagement/IMG-20201227-WA0270.jpg '/s/Satish Jobs/Coding/5-years-of-love/5-years-of-love/public/images/placeholder/timeline-3.jpg')",
+      "Bash(cp /d/Swati/Marriage/gadekar_sidhu_photography_20210303_050916_0.jpg '/s/Satish Jobs/Coding/5-years-of-love/5-years-of-love/public/images/placeholder/timeline-4.jpg')",
+      "Bash(cp '/d/Swati Drive/Swati and Me redmi note 5 pro-20220908T122654Z-001/Swati and Me redmi note 5 pro/Favorite/1634622471602.jpg' '/s/Satish Jobs/Coding/5-years-of-love/5-years-of-love/public/images/placeholder/gallery-1.jpg')",
+      "Bash(ls \"D:/Swati/Instagram\" 2>/dev/null | head -50; echo \"---count---\"; ls \"D:/Swati/Instagram\" 2>/dev/null | wc -l)",
+      "Read(//d/Swati/Instagram/**)",
+      "Bash(ls \"D:/Swati/Snapchat\" 2>/dev/null | head -50; echo \"---count---\"; ls \"D:/Swati/Snapchat\" 2>/dev/null | wc -l)",
+      "Read(//d/Swati/Snapchat/**)",
+      "Bash(ls \"D:/Swati/Insta Reels\" 2>/dev/null | head -30; echo \"---count---\"; ls \"D:/Swati/Insta Reels\" 2>/dev/null | wc -l)",
+      "Read(//d/Swati/Insta Reels/**)",
+      "Read(//d/Swati/Rajur@temple/**)",
+      "Read(//d/Swati/camera mob/**)",
+      "Read(//d/Swati/Malvan/**)",
+      "Bash(npm run *)"
+    ]
+  }
+}
