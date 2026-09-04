@@ -234,4 +234,5 @@
 .final-section { background-image: linear-gradient(180deg, rgba(35,13,24,.7), rgba(35,13,24,.9)), url('/images/3st%20year%202023/party.jpg'); background-size: cover; background-position: center 42%; }
 .final-section.final-revealing { background-image: linear-gradient(180deg, rgba(39,14,27,.58), rgba(39,14,27,.82)), url('/images/3st%20year%202023/party.jpg'); background-size: cover; background-position: center 42%; }
 .final-best-photo { display: block; width: min(100%, 270px); max-height: 360px; margin: 0 auto 1.5rem; object-fit: contain; border: 7px solid rgba(255,247,238,.88); box-shadow: 0 16px 40px rgba(18,6,13,.38); transform: rotate(-2deg); }
+.voice-message { display: grid; justify-items: center; gap: .7rem; width: min(100%, 360px); margin: 2rem auto 1rem; padding: 1rem; border: 1px solid rgba(255,235,211,.28); background: rgba(28,10,19,.45); }.voice-message-icon { color: #edaaa0; font-size: 1.5rem; }.voice-message strong { color: #ffe9de; font: 1.2rem/1.25 var(--font-letter); }.voice-message audio { width: 100%; height: 36px; }
 @media (max-width: 760px) { .final-section, .final-section.final-revealing { background-position: 58% center; } }
