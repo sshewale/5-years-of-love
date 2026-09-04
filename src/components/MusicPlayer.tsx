@@ -13,6 +13,7 @@ import { setStorageItem } from '../utils/storage'
 const MUSIC_PLAYING_KEY = 'swati_music_playing'
 const AUDIO_SRC = '/audio/romantic-bg_1.mp3'
 const SONG_TITLE = 'Romantic Melody ♪'
+const MEDIA_PLAY_EVENT = 'love-media-play'
 
 export function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -36,9 +37,15 @@ export function MusicPlayer() {
       setIsPlaying(false)
     }
     audio.addEventListener('error', handleError)
+    const handleOtherMedia = (event: Event) => {
+      const source = (event as CustomEvent<{ source?: string }>).detail?.source
+      if (source !== 'music') setIsPlaying(false)
+    }
+    window.addEventListener(MEDIA_PLAY_EVENT, handleOtherMedia)
 
     return () => {
       audio.removeEventListener('error', handleError)
+      window.removeEventListener(MEDIA_PLAY_EVENT, handleOtherMedia)
       audio.pause()
       audio.src = ''
     }
@@ -51,6 +58,7 @@ export function MusicPlayer() {
     if (!audio || audioError) return
 
     if (isPlaying) {
+      window.dispatchEvent(new CustomEvent(MEDIA_PLAY_EVENT, { detail: { source: 'music' } }))
       audio.play().catch(() => {
         setIsPlaying(false)
       })
